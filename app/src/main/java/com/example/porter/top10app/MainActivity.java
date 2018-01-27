@@ -5,9 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +30,17 @@ public class MainActivity extends AppCompatActivity {
         buttonParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                P
-            }
+                ParseApplications parseApplications = new ParseApplications(mFileContents);
+                parseApplications.process();
+                ArrayAdapter<Application> arrayAdapter = new ArrayAdapter<Application>(
+                        MainActivity.this, R.layout.list_item, parseApplications.getApplications());
+                        listApps.setAdapter(arrayAdapter);
+
+           }
         });
 
 
-        xmlTextView = (TextView) findViewById(R.id.xmlTextView);
+        listApps = (ListView) findViewById(R.id.xmlListView);
         DownloadData downloadData = new DownloadData();
         downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
     }
@@ -55,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("DownloadData", "Result was: " + result);
-            xmlTextView.setText(mFileContents);
         }
 
         private String downloadXMLFile(String urlPath) {

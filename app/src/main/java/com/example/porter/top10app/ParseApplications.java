@@ -1,5 +1,7 @@
 package com.example.porter.top10app;
 
+import android.util.Log;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -38,11 +40,43 @@ public class ParseApplications {
             while(eventType != XmlPullParser.END_DOCUMENT) {
                 String tagName = xpp.getName();
                 switch(eventType) {
+                    case XmlPullParser.START_TAG:
+                        if(tagName.equalsIgnoreCase("entry")) {
+                            inEntry = true;
+                            currentRecord = new Application();
+                        }
+                        break;
+                    case XmlPullParser.TEXT:
+                        textValue = xpp.getText();
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if(inEntry) {
+                            if(tagName.equalsIgnoreCase("entry")) {
+                                applications.add(currentRecord);
+                                inEntry = false;
+                            } else if(tagName.equalsIgnoreCase("name")) {
+                                currentRecord.setName(textValue);
+                            } else if(tagName.equalsIgnoreCase("artist")) {
+                                currentRecord.setArtist(textValue);
+                            } else if(tagName.equalsIgnoreCase("releaseDate")) {
+                                currentRecord.setReleaseData(textValue);
+                            }
+                        }
+                        break;
 
+                    default:
                 }
             }
-        } catch () {
-
+        } catch (Exception e) {
+            status = false;
+            e.printStackTrace();
         }
+
+        for(Application app : applications) {
+            Log.d("ParseApps", "Name: " + app.getName());
+            Log.d("ParseApps", "Artist: " + app.getArtist());
+            Log.d("ParseApps", "Release Data: " + app.getReleaseData());
+        }
+        return true;
     }
 }

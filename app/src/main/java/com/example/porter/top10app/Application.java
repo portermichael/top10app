@@ -10,11 +10,18 @@ public class Application {
     private String artist;
     private String releaseData;
 
-    public Application (String name, String artist, String releaseData){
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public void setReleaseData(String releaseData) {
         this.releaseData = releaseData;
     }
+
 
     public String getName() {
         return name;
